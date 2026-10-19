@@ -2,6 +2,7 @@ import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import { getApiUrl } from "./api/config";
 import { i18nApi } from "./api/modules/i18n";
+import { APP_NAME } from "./branding";
 import {
   resolveInitialLocale,
   syncDocumentLang,
@@ -78,6 +79,19 @@ export function refreshServerLabels(lng?: string): Promise<void> {
   return hydrateServerLabels(lng ?? i18n.language);
 }
 
+// Keep the upstream product name in one place: every translated string that
+// mentions "Octop" follows the configured display name, including locale
+// bundles and labels hydrated from the backend.
+const brandPostProcessor = {
+  type: "postProcessor" as const,
+  name: "brandReplace",
+  process(value: string): string {
+    return APP_NAME === "Octop"
+      ? value
+      : value.replace(/\bOctop\b/g, () => APP_NAME);
+  },
+};
+
 let initPromise: Promise<void> | null = null;
 
 export function initI18n(): Promise<void> {
@@ -87,6 +101,7 @@ export function initI18n(): Promise<void> {
       const fallback: UiLocale = initial === "zh" ? "en" : "zh";
       const primaryBundle = await loadLocaleBundle(initial);
 
+      i18n.use(brandPostProcessor);
       await i18n.use(initReactI18next).init({
         resources: {
           [initial]: { translation: primaryBundle },
@@ -95,6 +110,7 @@ export function initI18n(): Promise<void> {
         fallbackLng: fallback,
         supportedLngs: ["zh", "en"],
         nonExplicitSupportedLngs: true,
+        postProcess: ["brandReplace"],
         interpolation: {
           escapeValue: false,
         },

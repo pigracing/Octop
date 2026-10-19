@@ -1,4 +1,5 @@
 import { webcrypto } from "node:crypto";
+import { existsSync, readFileSync } from "node:fs";
 import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { VitePWA } from "vite-plugin-pwa";
@@ -52,8 +53,55 @@ function suppressViteDisconnectReload(): Plugin {
   };
 }
 
+/**
+ * Product name from desktop/branding.json (shared with the desktop packaging
+ * scripts). Missing config keeps the upstream name.
+ */
+function readBrandName(): string {
+  try {
+    const file = path.resolve(__dirname, "../desktop/branding.json");
+    const raw = JSON.parse(readFileSync(file, "utf-8")) as {
+      display_name?: unknown;
+    };
+    const name =
+      typeof raw.display_name === "string" ? raw.display_name.trim() : "";
+    return name || "Octop";
+  } catch {
+    return "Octop";
+  }
+}
+
+function injectAppName(appName: string): Plugin {
+  return {
+    name: "octop-inject-app-name",
+    transformIndexHtml(html) {
+      return html.replaceAll("__APP_NAME__", appName);
+    },
+  };
+}
+
+/**
+ * The generated public dir is only valid for the branding that produced it.
+ * A plain `make build-frontend` after editing branding.json must not keep a
+ * stale name/logo set; the packaging scripts regenerate it first.
+ */
+function brandedPublicIsCurrent(appName: string, dir: string): boolean {
+  if (!existsSync(dir)) return false;
+  try {
+    const manifest = JSON.parse(
+      readFileSync(path.join(dir, "manifest.json"), "utf-8"),
+    ) as { name?: unknown };
+    return manifest.name === appName;
+  } catch {
+    return false;
+  }
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
+  const appName = readBrandName();
+  // desktop/src/build/apply_branding.py writes a branded copy of public/.
+  const brandedPublic = path.resolve(__dirname, "branding/public");
   // Empty = same-origin; frontend and backend served together, no hardcoded host.
   const apiBaseUrl = env.BASE_URL ?? "";
   // Allow overriding the backend port via VITE_API_PORT env variable (default: 8088)
@@ -88,6 +136,9 @@ export default defineConfig(({ mode }) => {
   }
 
   return {
+    publicDir: brandedPublicIsCurrent(appName, brandedPublic)
+      ? brandedPublic
+      : path.resolve(__dirname, "public"),
     build: {
       outDir: path.resolve(__dirname, "../src/octop/dashboard"),
       emptyOutDir: true,
@@ -167,8 +218,10 @@ export default defineConfig(({ mode }) => {
     define: {
       BASE_URL: JSON.stringify(apiBaseUrl),
       MOBILE: false,
+      __APP_NAME__: JSON.stringify(appName),
     },
     plugins: [
+      injectAppName(appName),
       suppressViteDisconnectReload(),
       react(),
       VitePWA({

@@ -27,6 +27,19 @@ source "${REPO_ROOT}/desktop/portable/_common.sh"
 TEMPLATES="${REPO_ROOT}/desktop/portable/templates"
 require_uv
 
+# Finder/Spotlight can recreate .DS_Store while a tree is being removed,
+# making rm -rf fail with ENOTEMPTY. Retry before giving up.
+remove_tree() {
+  local target="$1" attempt
+  for attempt in 1 2 3 4 5; do
+    if rm -rf "$target"; then
+      return 0
+    fi
+    sleep 1
+  done
+  rm -rf "$target"
+}
+
 build_octop_wheel() {
   local wheel_dir="$1"
   mkdir -p "$wheel_dir"
@@ -120,7 +133,7 @@ assemble_one() {
   fi
 
   echo "[package] ${plat}: staging → ${staging}"
-  rm -rf "$staging"
+  remove_tree "$staging"
   mkdir -p "${staging}/packages"
   cp -a "$runtime" "${staging}/runtime"
 

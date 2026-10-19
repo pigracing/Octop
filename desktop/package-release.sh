@@ -15,7 +15,7 @@ fi
 
 usage() {
   cat <<'EOF'
-Usage: desktop/package-release.sh [platform] [--reuse-portable]
+Usage: desktop/package-release.sh [platform] [--reuse-portable] [--skip-frontend]
 
 Platforms:
   darwin-arm64 darwin-amd64 linux-arm64 linux-amd64
@@ -23,14 +23,17 @@ Platforms:
 
 The platform defaults to the current native host. --reuse-portable skips
 rebuilding desktop/portable/release/Octop-portable-<platform>-<version>.zip when it already exists.
+--skip-frontend reuses an already-built dashboard (desktop/package-all.sh builds it once).
 EOF
 }
 
 plat=""
 reuse_portable=0
+skip_frontend=0
 for arg in "$@"; do
   case "$arg" in
     --reuse-portable) reuse_portable=1 ;;
+    --skip-frontend) skip_frontend=1 ;;
     -h|--help) usage; exit 0 ;;
     -*) echo "unknown option: $arg" >&2; usage >&2; exit 2 ;;
     *)
@@ -69,8 +72,24 @@ ver="$(octop_version)"
 portable_zip="${REPO_ROOT}/desktop/portable/release/$(portable_zip_basename "$plat")"
 
 echo "[desktop-release] platform=${plat}"
-echo "[desktop-release] building Dashboard"
-make -C "$REPO_ROOT" build-frontend
+echo "[desktop-release] applying branding"
+if python3 -c "import PIL" >/dev/null 2>&1; then
+  python3 "${REPO_ROOT}/desktop/src/build/apply_branding.py"
+elif command -v uv >/dev/null 2>&1; then
+  uv run --no-project --with pillow python "${REPO_ROOT}/desktop/src/build/apply_branding.py"
+else
+  echo "[desktop-release] Pillow is required; run 'python3 -m pip install pillow' or install uv." >&2
+  exit 1
+fi
+display_name="$(cat "${REPO_ROOT}/desktop/src/build/branding/display_name.txt")"
+echo "[desktop-release] display_name=${display_name}"
+
+if [[ "$skip_frontend" == 1 ]]; then
+  echo "[desktop-release] reusing built Dashboard"
+else
+  echo "[desktop-release] building Dashboard"
+  make -C "$REPO_ROOT" build-frontend
+fi
 
 if [[ "$reuse_portable" == 1 && -f "$portable_zip" ]]; then
   echo "[desktop-release] reusing ${portable_zip}"
@@ -104,7 +123,8 @@ PYTHONNOUSERSITE=1 "$portable_python" \
 echo "[desktop-release] packaging Wails application"
 (
   cd "${REPO_ROOT}/desktop/src"
-  wails3 task package "ARCH=${arch}" "PORTABLE_ZIP=${portable_zip}" "VERSION=${ver}"
+  wails3 task package "ARCH=${arch}" "PORTABLE_ZIP=${portable_zip}" "VERSION=${ver}" \
+    "APP_DISPLAY_NAME=${display_name}"
 )
 
 output="${REPO_ROOT}/desktop/src/bin/$(desktop_pkg_basename "$plat")"

@@ -5,6 +5,7 @@ import AppVersionBadge from "../components/AppVersionBadge";
 import CurrentVersionBadge from "../components/CurrentVersionBadge";
 import { useTheme } from "../context/ThemeContext";
 import { typeSize } from "../utils/mobileTypeScale";
+import { APP_NAME } from "../branding";
 
 const { Header: AntHeader } = Layout;
 
@@ -79,7 +80,7 @@ export default function Header({ onToggle, isMobile }: HeaderProps) {
         )}
         <img
           src={mobileLogoSrc}
-          alt="octop"
+          alt={APP_NAME}
           style={{
             height: 36,
             width: "auto",

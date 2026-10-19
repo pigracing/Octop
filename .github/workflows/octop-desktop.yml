@@ -69,6 +69,14 @@ jobs:
           cache: npm
           cache-dependency-path: dashboard/package-lock.json
 
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: "3.12"
+
+      - name: Apply branding
+        run: uv run --no-project --with pillow python desktop/src/build/apply_branding.py
+
       - name: Build frontend → src/octop/dashboard
         run: make build-frontend
 
@@ -160,6 +168,11 @@ jobs:
         with:
           enable-cache: true
           python-version: "3.12"
+
+      - name: Apply branding
+        run: |
+          uv run --no-project --with pillow python desktop/src/build/apply_branding.py
+          echo "APP_DISPLAY_NAME=$(cat desktop/src/build/branding/display_name.txt)" >> "$GITHUB_ENV"
 
       # GitHub Cache outages must not fail the build — PBS download is cheap enough.
       - name: Cache python-build-standalone downloads
@@ -289,6 +302,7 @@ jobs:
           wails3 task package
           ARCH=${{ matrix.arch }}
           VERSION=${{ env.OCTOP_VERSION }}
+          APP_DISPLAY_NAME="${{ env.APP_DISPLAY_NAME }}"
           PORTABLE_ZIP=../portable/release/Octop-portable-${{ matrix.plat }}-${{ env.OCTOP_VERSION }}.zip
 
       # archive: false — upload the prebuilt zip as-is. Default archive=true would

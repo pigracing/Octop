@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from octop.i18n import all_keys_for_locale, tr
+from octop.i18n.loader import product_name
 from octop.infra.gateway.slash.catalog import CATALOG, category_label
 
 
@@ -28,6 +29,20 @@ def test_tr_interpolation():
 def test_tr_missing_key_raises():
     with pytest.raises(KeyError):
         tr("slash.no.such.key", "en")
+
+
+def test_tr_uses_desktop_display_name(monkeypatch):
+    monkeypatch.setenv("OCTOP_DISPLAY_NAME", "GoalPartner")
+    text = tr("errors.CONNECTOR_OAUTH_HTTPS_REQUIRED", "en")
+    assert text.startswith("GoalPartner ")
+    assert "Octop" not in text
+
+
+def test_product_name_env_override(monkeypatch):
+    monkeypatch.setenv("OCTOP_DISPLAY_NAME", "GoalPartner")
+    assert product_name() == "GoalPartner"
+    monkeypatch.delenv("OCTOP_DISPLAY_NAME")
+    assert product_name() == "Octop"
 
 
 def test_catalog_labels_match_json():

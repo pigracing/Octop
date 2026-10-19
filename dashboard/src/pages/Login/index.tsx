@@ -19,6 +19,7 @@ import { apiErrorMessage } from "../../utils/apiError";
 import { refreshServerLabels } from "../../i18n";
 import { applyUserLocale, applyGuestLocale } from "../../utils/locale";
 import { useTheme } from "../../context/ThemeContext";
+import { APP_NAME } from "../../branding";
 import {
   isSsoPopup,
   isSsoPopupMessage,
@@ -273,7 +274,7 @@ export default function LoginPage() {
           src={
             isDark ? "/logo_horizontal_white.png" : "/logo_horizontal_dark.png"
           }
-          alt="Octop"
+          alt={APP_NAME}
           style={{
             height: 48,
             width: "auto",

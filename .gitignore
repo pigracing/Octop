@@ -71,6 +71,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 dashboard/dist/
+dashboard/branding/
+desktop/release/
 src/octop/dashboard/**
 src/octop/dashboard/assets/*
 !src/octop/dashboard/__init__.py

@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 const (
 	copyStatusConnecting       = "status.connecting"
@@ -80,10 +83,13 @@ var desktopCopy = map[Locale]map[string]string{
 
 func desktopText(locale Locale, key string, args ...any) string {
 	msg := lookupDesktopCopy(locale, key)
-	if len(args) == 0 {
+	if len(args) > 0 {
+		msg = fmt.Sprintf(msg, args...)
+	}
+	if productDisplayName == "Octop" {
 		return msg
 	}
-	return fmt.Sprintf(msg, args...)
+	return strings.ReplaceAll(msg, "Octop", productDisplayName)
 }
 
 func lookupDesktopCopy(locale Locale, key string) string {

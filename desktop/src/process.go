@@ -70,6 +70,7 @@ func startOctop(root string, port int) (*exec.Cmd, error) {
 	cmd.Dir = root
 	mustEnv(cmd, map[string]string{
 		"OCTOP_HOME":           octopHome(),
+		"OCTOP_DISPLAY_NAME":   productDisplayName,
 		"OCTOP_GREEN_PACKAGES": filepath.Join(root, "packages"),
 		"OCTOP_PORT":           strconv.Itoa(port),
 		"PYTHONNOUSERSITE":     "1",

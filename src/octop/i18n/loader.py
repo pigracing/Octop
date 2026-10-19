@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json
+import os
+import re
 from functools import lru_cache
 from importlib import resources
 from typing import Any
@@ -10,6 +12,17 @@ from typing import Any
 from octop.infra.utils.locale import Locale, normalize_locale
 
 _FALLBACK_LOCALE: Locale = "en"
+_DEFAULT_PRODUCT = "Octop"
+
+
+def product_name() -> str:
+    """Display name for server-owned copy.
+
+    The desktop shell sets ``OCTOP_DISPLAY_NAME`` from ``desktop/branding.json``
+    before spawning the bundled runtime. Standalone servers keep the upstream
+    name.
+    """
+    return os.environ.get("OCTOP_DISPLAY_NAME") or _DEFAULT_PRODUCT
 
 
 def _resolve_node(table: dict[str, Any], key: str) -> str | None:
@@ -46,7 +59,11 @@ def tr(key: str, locale: str | Locale = "en", **kwargs: object) -> str:
     text = lookup(key, locale)
     if text is None:
         raise KeyError(key)
-    return text.format(**kwargs) if kwargs else text
+    rendered = text.format(**kwargs) if kwargs else text
+    name = product_name()
+    if name == _DEFAULT_PRODUCT:
+        return rendered
+    return re.sub(rf"\b{_DEFAULT_PRODUCT}\b", lambda _: name, rendered)
 
 
 def flatten_keys(table: dict[str, Any], prefix: str = "") -> set[str]:

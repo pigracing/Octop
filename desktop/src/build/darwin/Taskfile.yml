@@ -37,13 +37,14 @@ tasks:
           PORTABLE_ZIP: "{{.PORTABLE_ZIP}}"
           ARCH: "{{.ARCH}}"
           VERSION: "{{.VERSION}}"
+          APP_DISPLAY_NAME: "{{.DISPLAY_NAME}}"
       - rm -f {{.ARCHIVE}} {{.BIN_DIR}}/{{.APP_NAME}}-Desktop-darwin-{{.ARCH}}.zip {{.BIN_DIR}}/{{.APP_NAME}}-Desktop-darwin-{{.ARCH}}.dmg
       - |
         set -euo pipefail
-        app_path="{{.BIN_DIR}}/{{.APP_NAME}}.app"
+        app_path="{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app"
         output="{{.ARCHIVE}}"
-        volname="{{.APP_NAME}}"
-        app_name="{{.APP_NAME}}.app"
+        volname="{{.DISPLAY_NAME}}"
+        app_name="{{.DISPLAY_NAME}}.app"
         work="$(mktemp -d "${TMPDIR:-/tmp}/octop-dmg.XXXXXX")"
         staging="${work}/root"
         rw_dmg="${work}/rw.dmg"
@@ -89,7 +90,7 @@ tasks:
         # Finder renders a background picture at its DPI-derived point size, so
         # 1200x800 @144dpi lands exactly on the 600x400pt container window.
         sips -s format png -z 800 1200 -s dpiWidth 144 -s dpiHeight 144 \
-          build/darwin/dmg-background.jpeg --out "${staging}/.background/background.png" >/dev/null
+          build/branding/dmg-background.jpeg --out "${staging}/.background/background.png" >/dev/null
         if [[ -d "/Volumes/${volname}" ]]; then
           hdiutil detach "/Volumes/${volname}" -quiet >/dev/null 2>&1 || \
             hdiutil detach "/Volumes/${volname}" -force -quiet >/dev/null 2>&1 || true
@@ -147,6 +148,7 @@ tasks:
     vars:
       ARCH: "{{.ARCH | default ARCH}}"
       VERSION: '{{.VERSION | default "dev"}}'
+      DISPLAY_NAME: '{{.APP_DISPLAY_NAME | default "Octop"}}'
       PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/Octop-portable-darwin-%s-%s.zip" .ARCH .VERSION)}}'
       ARCHIVE: '{{.BIN_DIR}}/{{.APP_NAME}}-desktop-darwin-{{.ARCH}}-{{.VERSION}}.dmg'
 
@@ -154,16 +156,17 @@ tasks:
     summary: Creates an .app bundle
     cmds:
       - test -f {{.PORTABLE_ZIP}}
-      - mkdir -p {{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/{MacOS,Resources}
-      - cp build/darwin/icons.icns {{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/Resources
+      - mkdir -p "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/MacOS" "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Resources"
+      - cp build/darwin/icons.icns "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Resources"
       # Stable name inside the signed .app; GitHub Release uses the versioned portable zip.
-      - cp {{.PORTABLE_ZIP}} {{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/Resources/Octop-darwin-{{.ARCH}}.zip
-      - cp {{.BIN_DIR}}/{{.APP_NAME}} {{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/MacOS
-      - cp build/darwin/Info.plist {{.BIN_DIR}}/{{.APP_NAME}}.app/Contents
-      - python3 build/stamp_version.py plist {{.BIN_DIR}}/{{.APP_NAME}}.app/Contents/Info.plist "{{.VERSION}}"
-      - codesign --force --deep --sign - {{.BIN_DIR}}/{{.APP_NAME}}.app
+      - cp {{.PORTABLE_ZIP}} "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Resources/Octop-darwin-{{.ARCH}}.zip"
+      - cp "{{.BIN_DIR}}/{{.APP_NAME}}" "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/MacOS"
+      - cp build/branding/Info.plist "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents"
+      - python3 build/stamp_version.py plist "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Info.plist" "{{.VERSION}}"
+      - codesign --force --deep --sign - "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app"
     vars:
       VERSION: '{{.VERSION | default "dev"}}'
+      DISPLAY_NAME: '{{.APP_DISPLAY_NAME | default "Octop"}}'
 
   run:
     cmds:

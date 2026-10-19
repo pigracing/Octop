@@ -25,22 +25,40 @@ tasks:
     cmds:
       - echo "skip generate bindings"
 
-  generate:icons:
-    summary: Generates .ico from appicon.png
+  brand:
+    summary: Generates branded build assets from desktop/branding.json
     dir: build
+    cmds:
+      - |
+        if python3 -c "import PIL" >/dev/null 2>&1; then
+          python3 apply_branding.py
+        elif command -v uv >/dev/null 2>&1; then
+          uv run --no-project --with pillow python apply_branding.py
+        else
+          echo "apply_branding.py needs Pillow: python3 -m pip install pillow (or install uv)." >&2
+          exit 1
+        fi
+
+  generate:icons:
+    summary: Generates .ico from the branded app icon
+    dir: build
+    deps:
+      - brand
     sources:
-      - appicon.png
+      - branding/appicon.png
     generates:
       - windows/icon.ico
     cmds:
       # Windows / Linux keep the full-bleed artwork.
-      - wails3 generate icons -input appicon.png -windowsfilename windows/icon.ico -macfilename ""
+      - wails3 generate icons -input branding/appicon.png -windowsfilename windows/icon.ico -macfilename ""
 
   generate:icons:darwin:
-    summary: Generates .icns from appicon-macos.png via sips + iconutil
+    summary: Generates .icns from the branded macOS icon via sips + iconutil
     dir: build
+    deps:
+      - brand
     sources:
-      - appicon-macos.png
+      - branding/appicon-macos.png
     generates:
       - darwin/icons.icns
     cmds:
@@ -60,7 +78,7 @@ tasks:
                     128:icon_128x128 256:icon_128x128@2x 256:icon_256x256 \
                     512:icon_256x256@2x 512:icon_512x512 1024:icon_512x512@2x; do
           px="${spec%%:*}"
-          sips -s format png -z "$px" "$px" appicon-macos.png \
+          sips -s format png -z "$px" "$px" branding/appicon-macos.png \
             --out "${iconset}/${spec#*:}.png" >/dev/null
         done
         iconutil -c icns "$iconset" -o darwin/icons.icns

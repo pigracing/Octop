@@ -92,9 +92,12 @@ help:
 .PHONY: build
 build: build-frontend build-wheel
 
+# Finder (.DS_Store) and Spotlight can recreate files while npm prunes
+# node_modules, which makes `npm ci` fail with ENOTEMPTY. Purge it first.
 .PHONY: build-frontend
 build-frontend:
 	@echo "[build-frontend] Installing npm dependencies..."
+	rm -rf $(DASHBOARD_DIR)/node_modules
 	cd $(DASHBOARD_DIR) && npm ci
 	@echo "[build-frontend] Building dashboard (output: $(DASHBOARD_DEST))..."
 	cd $(DASHBOARD_DIR) && NODE_ENV=production NODE_OPTIONS="--max-old-space-size=2048" npm run build

@@ -10,6 +10,7 @@ import { authApi } from "../../api/modules/auth";
 import { preferencesApi } from "../../api/modules/preferences";
 import BootOfflinePanel from "../../components/BootOfflinePanel";
 import { useTheme } from "../../context/ThemeContext";
+import { APP_NAME } from "../../branding";
 import { isNetworkFetchError } from "../../utils/networkError";
 import DatabaseStep from "./steps/DatabaseStep";
 import PasswordStep from "./steps/PasswordStep";
@@ -262,7 +263,7 @@ export default function SetupPage() {
                     ? "/logo_horizontal_white.png"
                     : "/logo_horizontal_dark.png"
                 }
-                alt="Octop"
+                alt={APP_NAME}
                 className={styles.wizardHeaderLogo}
               />
               <div className={styles.wizardHeaderBrandText}>

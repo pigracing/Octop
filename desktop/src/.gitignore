@@ -9,3 +9,5 @@ build/windows/info.generated.json
 build/windows/wails.exe.generated.manifest
 build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
 build/linux/icon.png
+build/branding/
+branding_generated.go

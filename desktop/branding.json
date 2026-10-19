@@ -1,0 +1,8 @@
+{
+  "display_name": "GoalPartner",
+  "icon": "desktop/src/build/appicon.png",
+  "icon_macos": "desktop/src/build/appicon-macos.png",
+  "tray_icon": "desktop/src/assets/tray-icon.png",
+  "tray_icon_template": "desktop/src/assets/tray-icon-template.png",
+  "favicon": "dashboard/public/favico.svg"
+}

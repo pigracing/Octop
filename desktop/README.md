@@ -47,6 +47,51 @@ matrix on macOS, Linux, and Windows runners rather than cross-compiled locally.
 Windows packaging also needs [NSIS](https://nsis.sourceforge.io/) (`makensis`)
 so the `.exe` is an installer rather than a portable single-file binary.
 
+## Branding
+
+User-visible names and icons come from `desktop/branding.json` (paths are
+relative to the repository root). Edit `display_name`, point `icon` at a square
+PNG, and optionally provide per-surface icons/logos; omitted entries are
+derived from `icon`.
+
+```bash
+# Regenerate build-time branding assets (plist, Windows metadata, PWA icons,
+# Go tray icon bytes, branded dashboard public/).
+uv run --no-project --with pillow python desktop/src/build/apply_branding.py
+```
+
+`package-release.sh`, `package-all.sh` and the desktop CI workflow run this
+step automatically. A plain `make build-frontend` without it keeps the upstream
+assets; the generated public dir is only reused when its manifest name matches
+the current config.
+
+`display_name` only replaces text. The sidebar/Login wordmark is an image, so
+changing the name alone leaves the upstream "Octop" logo in place. Point the
+`logo_*` keys at your own PNG/SVG (or remove them to derive logos from `icon`
+and the display name), and point `icon`/`icon_macos`/`tray_*` at your own
+artwork. `apply_branding.py` prints a warning when `display_name` is not
+`Octop` but these paths still point at the upstream files.
+
+The macOS DMG background headline ("Drag <name>. …") is regenerated from
+`display_name`. Set `dmg_background` to a custom JPEG/PNG to replace the whole
+background instead.
+
+Technical identifiers stay stable on purpose: the executable is still `Octop`,
+the bundle id is still `com.tencent.octop`, the portable zip root is still
+`Octop-<plat>/`, and release asset names are still `Octop-desktop-*`.
+
+## Build all platforms in one command
+
+```bash
+desktop/package-all.sh                 # all six platform/arch variants
+desktop/package-all.sh --platforms darwin-arm64,linux-amd64
+```
+
+The native host platform is packaged locally; the remaining platforms are built
+by the `octop-desktop.yml` GitHub Actions matrix (requires `gh auth login` and a
+pushed branch) and downloaded into `desktop/release/<version>/`. Use
+`--skip-local`, `--skip-ci` or `--reuse-portable` to narrow the run.
+
 ## Build the Wails shell
 
 Run these from **`desktop/src`** (that directory contains `Taskfile.yml` and

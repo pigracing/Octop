@@ -16,6 +16,7 @@ from scalar_fastapi import get_scalar_api_reference
 from octop.api.middleware.jwt_auth import install as install_jwt_auth
 from octop.api.middleware.setup_lockdown import install as install_setup_lockdown
 from octop.api.openapi_meta import API_DESCRIPTION, OPENAPI_TAGS, configure_openapi
+from octop.i18n.loader import product_name
 from octop.infra.errors import ErrorCode, OctopError
 from octop.infra.server import OctopServer
 from octop.infra.utils.locale import resolve_request_locale
@@ -107,7 +108,7 @@ def build_app(server: OctopServer) -> FastAPI:
     )
 
     app = FastAPI(
-        title="Octop API",
+        title=f"{product_name()} API",
         version="0.1.0",
         description=API_DESCRIPTION,
         openapi_url="/api/openapi.json" if enable_api_docs else None,
@@ -310,7 +311,7 @@ def build_app(server: OctopServer) -> FastAPI:
         async def api_docs() -> HTMLResponse:
             return get_scalar_api_reference(
                 openapi_url=app.openapi_url,
-                title="Octop API",
+                title=f"{product_name()} API",
             )
 
     if enable_dashboard:
