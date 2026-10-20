@@ -798,6 +798,17 @@ function ChatPageInner() {
     ],
   );
 
+  // First turn handed over from a workspace project home. Wait until the
+  // agent is ready, then send it as a brand-new chat (the caller navigated
+  // with ``newChat`` so no earlier thread is opened underneath it).
+  useEffect(() => {
+    if (!agentChatReady || noAgents || !resolvedAgentId) return;
+    const pending = chatStore.peekPendingAutoSend();
+    if (!pending || pending.agentId !== resolvedAgentId) return;
+    chatStore.consumePendingAutoSend();
+    wrappedHandleSend(pending.text, pending.attachments, pending.overrides);
+  }, [agentChatReady, noAgents, resolvedAgentId, wrappedHandleSend]);
+
   const flushQueuedItem = useCallback(
     (item: QueuedChatItem, ctx: ChatQueueFlushContext): boolean => {
       if (!ctx.threadId) {

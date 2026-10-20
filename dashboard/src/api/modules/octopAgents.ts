@@ -1,6 +1,11 @@
 import { request, requestUpload } from "../request";
 
 export const octopAgentsApi = {
+  start: (agentId: string) =>
+    request<void>(`/agents/${encodeURIComponent(agentId)}/start`, {
+      method: "POST",
+    }),
+
   markRead: (agentId: string) =>
     request<void>(`/agents/${encodeURIComponent(agentId)}/read`, {
       method: "POST",

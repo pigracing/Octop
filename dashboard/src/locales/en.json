@@ -209,6 +209,8 @@
     "INVITE_RATE_LIMITED": "Too many invite attempts. Try again later.",
     "WORKSPACE_ROOT_RESTRICTED": "The selected storage root is outside the allowed directory for this account.",
     "WORKSPACE_ROOT_CONTAINER_UNSUPPORTED": "Allowed storage root cannot be set while Octop is running in a container.",
+    "PROJECT_WORKDIR_INVALID": "Cannot use this project working directory: {{detail}}",
+    "PROJECT_NOT_FOUND": "This workspace project no longer exists.",
     "TOKEN_QUOTA_EXCEEDED": "This account has reached its token quota. Please contact an administrator to raise the limit ({{used}}/{{quota}}).",
     "AGENT_QUOTA_EXCEEDED": "This account has reached its expert limit. Please contact an administrator to raise the limit ({{used}}/{{quota}}).",
     "CAPTCHA_REQUIRED": "This server requires a captcha token to sign in.",
@@ -226,6 +228,7 @@
   },
   "nav": {
     "chat": "Conversation",
+    "workspace": "Workspace",
     "common": "Common",
     "control": "Control",
     "experts": "Experts",
@@ -1907,6 +1910,92 @@
     }
   },
   "workspace": {
+    "title": "Workspace",
+    "subtitle": "Projects that work inside a folder on this machine.",
+    "newProject": "New project",
+    "editProject": "Edit project",
+    "create": "Create",
+    "projectName": "Project name",
+    "projectNamePlaceholder": "e.g. Marketing site",
+    "projectNameRequired": "Enter a project name",
+    "workingDir": "Working directory",
+    "workingDirRequired": "Choose a working directory",
+    "workingDirHint": "The project agent reads and writes files in this folder. Pick an existing folder or create one from the picker.",
+    "description": "Description",
+    "descriptionPlaceholder": "What is this project for?",
+    "created": "Project created",
+    "updated": "Project updated",
+    "projectSaveFailed": "Could not save the project",
+    "deleteTitle": "Delete \"{{name}}\"?",
+    "deleteBody": "The project and its chats are removed. Files in the working directory are kept.",
+    "deleted": "Project deleted",
+    "projectDeleteFailed": "Could not delete the project",
+    "projectActions": "Project actions",
+    "emptyTitle": "No projects yet",
+    "emptyHint": "Create a project, pick a working directory, and start working with an agent inside that folder.",
+    "updatedAt": "Updated {{time}}",
+    "notFound": "Project not found",
+    "backToProjects": "Back to workspace",
+    "startFailed": "Could not start the project agent",
+    "modeWork": "Work",
+    "modeCode": "Code",
+    "selectWorkspace": "Select workspace",
+    "permissionAsk": "Default permissions",
+    "permissionFullAccess": "Full access",
+    "chips": {
+      "documents": {
+        "label": "Documents",
+        "prompt": "Help me write a document about: "
+      },
+      "finance": {
+        "label": "Finance",
+        "prompt": "Analyze this financial data for me. Focus on: "
+      },
+      "data": {
+        "label": "Data",
+        "prompt": "Analyze this dataset and answer: "
+      },
+      "slides": {
+        "label": "Slides",
+        "prompt": "Create a slide deck about: "
+      },
+      "research": {
+        "label": "Deep Research",
+        "prompt": "Research this topic in depth and give me a sourced summary: "
+      },
+      "proposals": {
+        "label": "Proposals",
+        "prompt": "Write a proposal for: "
+      },
+      "scheduled": {
+        "label": "Scheduled Tasks",
+        "prompt": "Set up a scheduled task that runs every day at 9am to: "
+      },
+      "explain": {
+        "label": "Explain code",
+        "prompt": "Explain this project's structure, starting from the entry point and covering the main modules."
+      },
+      "fix": {
+        "label": "Fix a bug",
+        "prompt": "Look for likely bugs in this project and fix: "
+      },
+      "tests": {
+        "label": "Write tests",
+        "prompt": "Add unit tests for this project, starting with the modules that lack coverage."
+      },
+      "refactor": {
+        "label": "Refactor",
+        "prompt": "Refactor this code without changing its behavior: "
+      },
+      "review": {
+        "label": "Review changes",
+        "prompt": "Review the recent changes and point out risks and improvements: "
+      },
+      "run": {
+        "label": "Run project",
+        "prompt": "Run this project and show me how to verify it works."
+      }
+    },
     "refreshHint": "Refreshes root only; subfolders load on expand",
     "refreshFailed": "Refresh failed",
     "uploaded": "Uploaded {{name}}",

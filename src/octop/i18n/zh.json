@@ -512,6 +512,8 @@
     "INVITE_RATE_LIMITED": "邀请尝试次数过多，请稍后再试。",
     "WORKSPACE_ROOT_RESTRICTED": "所选存储根目录超出了该账号允许的范围。",
     "WORKSPACE_ROOT_CONTAINER_UNSUPPORTED": "容器环境下不能设置「允许的存储根目录」。",
+    "PROJECT_WORKDIR_INVALID": "无法使用该项目工作目录：{detail}",
+    "PROJECT_NOT_FOUND": "该工作空间项目已不存在。",
     "TOKEN_QUOTA_EXCEEDED": "该账号已达到 token 配额上限，请联系管理员提升额度（{used}/{quota}）。",
     "AGENT_QUOTA_EXCEEDED": "该账号已达到专家数量上限，请联系管理员提升额度（{used}/{quota}）。",
     "CAPTCHA_REQUIRED": "此服务器登录需要验证码令牌。",

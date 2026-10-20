@@ -244,3 +244,50 @@
     display: none !important;
   }
 }
+
+/** Nested workspace-project rows under the active “Workspace” nav item. */
+.navChildren {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin: 0 0 4px 26px;
+  padding-left: 8px;
+  border-left: 1px solid var(--fn-border-secondary);
+}
+
+.navChildItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  height: 30px;
+  padding: 0 8px;
+  border: none;
+  border-radius: var(--fn-radius-md);
+  background: transparent;
+  color: var(--fn-text-secondary);
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--fn-transition-fast),
+    color var(--fn-transition-fast);
+
+  &:hover {
+    background: var(--fn-sidebar-item-hover);
+    color: var(--fn-text-primary);
+  }
+}
+
+.navChildItemActive {
+  background: var(--fn-sidebar-item-active-bg);
+  color: var(--fn-sidebar-item-active-text);
+  font-weight: 500;
+}
+
+.navChildLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

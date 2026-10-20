@@ -19,7 +19,9 @@ import {
   type ChatMessage,
   type SessionSnapshot,
   type SessionStreamState,
+  type UserComposerContext,
 } from "./sseHelpers";
+import type { HitlSessionPolicy } from "../utils/hitlSessionPolicy";
 import {
   parseHarnessChunk,
   streamSpeakerId,
@@ -199,6 +201,57 @@ export function consumePendingPrefillAttachments(): ChatAttachment[] {
   const val = _pendingPrefillAttachments;
   _pendingPrefillAttachments = [];
   return val.map((attachment) => ({ ...attachment }));
+}
+
+// ── Pending auto-send (workspace project home) ────────────────────────────
+// The project home has no chat runtime of its own: it stashes the first turn
+// here, navigates to /chat/<agent>, and the chat page sends it once the agent
+// is ready. Entries older than the TTL are dropped so a failed start cannot
+// surprise the user with a stale turn on a later visit.
+
+export interface PendingAutoSendOverrides {
+  selectedModel?: string | null;
+  selectedConnectors?: string[];
+  selectedKnowledgeBaseIds?: string[];
+  composerContext?: UserComposerContext;
+  modelRef?: string | null;
+  conversationMode?: "ask" | "plan" | "craft";
+  hitlPolicy?: HitlSessionPolicy;
+}
+
+export interface PendingAutoSend {
+  agentId: string;
+  text: string;
+  attachments?: ChatAttachment[];
+  overrides?: PendingAutoSendOverrides;
+  createdAt: number;
+}
+
+const PENDING_AUTO_SEND_TTL_MS = 5 * 60 * 1000;
+let _pendingAutoSend: PendingAutoSend | null = null;
+
+/** Queue a first turn to send after the chat page for *agentId* is ready. */
+export function setPendingAutoSend(
+  payload: Omit<PendingAutoSend, "createdAt">,
+): void {
+  _pendingAutoSend = { ...payload, createdAt: Date.now() };
+}
+
+/** Read the queued turn without clearing it (null once expired). */
+export function peekPendingAutoSend(): PendingAutoSend | null {
+  if (!_pendingAutoSend) return null;
+  if (Date.now() - _pendingAutoSend.createdAt > PENDING_AUTO_SEND_TTL_MS) {
+    _pendingAutoSend = null;
+    return null;
+  }
+  return _pendingAutoSend;
+}
+
+/** Read and clear the queued turn. */
+export function consumePendingAutoSend(): PendingAutoSend | null {
+  const pending = peekPendingAutoSend();
+  _pendingAutoSend = null;
+  return pending;
 }
 
 // ── Composer draft (sessionStorage) ───────────────────────────────────────

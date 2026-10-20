@@ -5,7 +5,8 @@ import type { TFunction } from "i18next";
 import AvatarDropdown from "../components/AvatarDropdown";
 import AppVersionBadge from "../components/AppVersionBadge";
 import CurrentVersionBadge from "../components/CurrentVersionBadge";
-import { ArrowRightLeft, ChevronDown, X } from "lucide-react";
+import { ArrowRightLeft, ChevronDown, Folder, X } from "lucide-react";
+import { useWorkspaceProjects } from "../hooks/useWorkspaceProjects";
 import { useTheme } from "../context/ThemeContext";
 import { useLayoutMode } from "../context/LayoutModeContext";
 import { useUserRole } from "../hooks/useUserRole";
@@ -151,103 +152,140 @@ function NavItemButton({
   const railLabel = chatRailOpen
     ? t("chat.collapseHistorySidebar", "收起对话历史")
     : t("chat.expandHistorySidebar", "展开对话历史");
+  const currentPath = useLocation().pathname;
+  const showChildren = Boolean(item.children?.length && active);
 
   return (
-    <div
-      className={styles.navItemRow}
-      style={{
-        background: active ? "var(--fn-sidebar-item-active-bg)" : "transparent",
-      }}
-      onMouseEnter={(e) => {
-        prefetchRoute(item.path);
-        if (!active) {
-          e.currentTarget.style.background = "var(--fn-sidebar-item-hover)";
-        }
-      }}
-      onMouseLeave={(e) => {
-        if (!active) {
-          e.currentTarget.style.background = "transparent";
-        }
-      }}
-    >
-      <button
-        type="button"
-        className={styles.navItemMain}
-        onClick={() => onNavigate(item.path)}
+    <>
+      <div
+        className={styles.navItemRow}
         style={{
-          color: active
-            ? "var(--fn-sidebar-item-active-text)"
-            : "var(--fn-text-secondary)",
-          fontSize: typeSize(14, isMobile),
-          fontWeight: active ? 500 : 400,
-          paddingRight: showToggle ? 4 : 12,
+          background: active
+            ? "var(--fn-sidebar-item-active-bg)"
+            : "transparent",
+        }}
+        onMouseEnter={(e) => {
+          prefetchRoute(item.path);
+          if (!active) {
+            e.currentTarget.style.background = "var(--fn-sidebar-item-hover)";
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!active) {
+            e.currentTarget.style.background = "transparent";
+          }
         }}
       >
-        <span
-          style={{
-            flexShrink: 0,
-            display: "flex",
-            alignItems: "center",
-            color: active
-              ? "var(--fn-sidebar-item-active-text)"
-              : "var(--fn-text-tertiary)",
-          }}
-        >
-          {item.icon}
-        </span>
-        <span
-          style={{
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-            whiteSpace: "nowrap",
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            minWidth: 0,
-          }}
-        >
-          {t(item.labelKey)}
-          {item.key === "admin-advanced" && role === "admin" && hasUpdate ? (
-            <span className={styles.navUpdateBadge}>
-              {t("nav.newVersionBadge", "有新版本")}
-            </span>
-          ) : null}
-          {item.badge && (
-            <span
-              className="nav-badge-new"
-              style={{
-                fontSize: typeSize(9, isMobile),
-                fontWeight: 600,
-                padding: "1px 4px",
-                borderRadius: "2px",
-                whiteSpace: "nowrap",
-                flexShrink: 0,
-                textTransform: "uppercase",
-                lineHeight: 1.2,
-                letterSpacing: "0.5px",
-              }}
-            >
-              {item.badge}
-            </span>
-          )}
-        </span>
-      </button>
-      {showToggle ? (
         <button
           type="button"
-          className={styles.chatRailExpandBtn}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleChatRail?.();
+          className={styles.navItemMain}
+          onClick={() => onNavigate(item.path)}
+          style={{
+            color: active
+              ? "var(--fn-sidebar-item-active-text)"
+              : "var(--fn-text-secondary)",
+            fontSize: typeSize(14, isMobile),
+            fontWeight: active ? 500 : 400,
+            paddingRight: showToggle ? 4 : 12,
           }}
-          aria-expanded={Boolean(chatRailOpen)}
-          aria-label={railLabel}
-          title={railLabel}
         >
-          <ArrowRightLeft size={14} strokeWidth={1.8} aria-hidden />
+          <span
+            style={{
+              flexShrink: 0,
+              display: "flex",
+              alignItems: "center",
+              color: active
+                ? "var(--fn-sidebar-item-active-text)"
+                : "var(--fn-text-tertiary)",
+            }}
+          >
+            {item.icon}
+          </span>
+          <span
+            style={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              minWidth: 0,
+            }}
+          >
+            {t(item.labelKey)}
+            {item.key === "admin-advanced" && role === "admin" && hasUpdate ? (
+              <span className={styles.navUpdateBadge}>
+                {t("nav.newVersionBadge", "有新版本")}
+              </span>
+            ) : null}
+            {item.badge && (
+              <span
+                className="nav-badge-new"
+                style={{
+                  fontSize: typeSize(9, isMobile),
+                  fontWeight: 600,
+                  padding: "1px 4px",
+                  borderRadius: "2px",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  textTransform: "uppercase",
+                  lineHeight: 1.2,
+                  letterSpacing: "0.5px",
+                }}
+              >
+                {item.badge}
+              </span>
+            )}
+            {item.children?.length ? (
+              <ChevronDown
+                size={12}
+                strokeWidth={2}
+                aria-hidden
+                style={{
+                  flexShrink: 0,
+                  opacity: active ? 0.7 : 0.35,
+                  transform: active ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform var(--fn-transition-fast)",
+                }}
+              />
+            ) : null}
+          </span>
         </button>
+        {showToggle ? (
+          <button
+            type="button"
+            className={styles.chatRailExpandBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleChatRail?.();
+            }}
+            aria-expanded={Boolean(chatRailOpen)}
+            aria-label={railLabel}
+            title={railLabel}
+          >
+            <ArrowRightLeft size={14} strokeWidth={1.8} aria-hidden />
+          </button>
+        ) : null}
+      </div>
+      {showChildren ? (
+        <div className={styles.navChildren}>
+          {item.children!.map((child) => (
+            <button
+              key={child.key}
+              type="button"
+              className={`${styles.navChildItem} ${
+                currentPath === child.path ? styles.navChildItemActive : ""
+              }`}
+              onClick={() => onNavigate(child.path)}
+              title={child.label}
+            >
+              <Folder size={13} strokeWidth={1.8} aria-hidden />
+              <span className={styles.navChildLabel}>{child.label}</span>
+            </button>
+          ))}
+        </div>
       ) : null}
-    </div>
+    </>
   );
 }
 
@@ -404,10 +442,22 @@ export default function Sidebar({
   const { layoutMode, minimalPane, setMinimalPane } = useLayoutMode();
   const isMinimal = layoutMode === "minimal";
   const onChatPath = isChatPath(location.pathname);
-  const catalog = useMemo(
-    () => buildNavSections(user, { mobileEnabled }),
-    [user, mobileEnabled],
-  );
+  const { projects } = useWorkspaceProjects();
+  const catalog = useMemo(() => {
+    const sections = buildNavSections(user, { mobileEnabled });
+    if (projects.length === 0) return sections;
+    const children = projects.map((project) => ({
+      key: `project:${project.project_id}`,
+      path: `/workspace/${project.project_id}`,
+      label: project.name,
+    }));
+    return sections.map((section) => ({
+      ...section,
+      items: section.items.map((item) =>
+        item.key === "workspace" ? { ...item, children } : item,
+      ),
+    }));
+  }, [user, mobileEnabled, projects]);
   const [savedLayout, setSavedLayout] = useState<SidebarNavLayout | null>(null);
   const [customizerOpen, setCustomizerOpen] = useState(false);
   const navSections = useMemo(

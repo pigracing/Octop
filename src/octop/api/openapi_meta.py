@@ -70,6 +70,10 @@ OPENAPI_TAGS: list[dict[str, str]] = [
         "description": "Create and configure AI agents; start, stop, and inspect runtime status.",
     },
     {
+        "name": "projects",
+        "description": "Workspace projects: agents bound to a host working directory, with their own project home.",
+    },
+    {
         "name": "chat",
         "description": "Dashboard chat: WebSocket streaming, threads, conversation history, trajectory ledger, and text-push toasts.",
     },

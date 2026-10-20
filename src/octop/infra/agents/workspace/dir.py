@@ -135,25 +135,31 @@ def agent_host_data_dirs(
 
     Covers the persisted workspace, ``~/.octop/agents/<id>``, a scoped jail
     workspace, and ``~/.octop/workspaces/<id>``. Roots such as ``/``, the
-    home directory, and ``OCTOP_HOME`` itself are never included.
+    home directory, and ``OCTOP_HOME`` itself are never included. A persisted
+    ``workspace_dir`` equal to the backend ``root_dir`` (workspace projects)
+    is user data and is skipped too.
     """
     candidates: list[Path] = []
-    raw = (cfg or {}).get("workspace_dir")
-    if isinstance(raw, str) and raw.strip():
-        with contextlib.suppress(ValueError):
-            candidates.append(resolve_workspace_host_path(raw, cfg))
-    candidates.append(paths.agent_workspace(agent_id))
-    candidates.append(paths.root / SCOPED_WORKSPACE_DIRNAME / agent_id)
     root_raw = local_backend_root_dir(cfg)
+    root: Path | None = None
     if root_raw is not None and not _is_host_root_sentinel(root_raw):
         try:
             root = Path(root_raw).expanduser().resolve()
         except OSError:
             root = None
-        if root is not None:
-            candidates.append(
-                root / DEFAULT_SYSTEM_FILES_PATH / SCOPED_WORKSPACE_DIRNAME / agent_id
-            )
+    raw = (cfg or {}).get("workspace_dir")
+    if isinstance(raw, str) and raw.strip():
+        with contextlib.suppress(ValueError):
+            workspace = resolve_workspace_host_path(raw, cfg)
+            # ``workspace_dir == root_dir`` means the user chose the backend
+            # root itself as the working directory (workspace projects). That
+            # directory holds user data — never delete it with the agent.
+            if root is None or workspace.resolve() != root:
+                candidates.append(workspace)
+    candidates.append(paths.agent_workspace(agent_id))
+    candidates.append(paths.root / SCOPED_WORKSPACE_DIRNAME / agent_id)
+    if root is not None:
+        candidates.append(root / DEFAULT_SYSTEM_FILES_PATH / SCOPED_WORKSPACE_DIRNAME / agent_id)
     unique: list[Path] = []
     seen: set[Path] = set()
     for candidate in candidates:

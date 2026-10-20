@@ -209,6 +209,8 @@
     "INVITE_RATE_LIMITED": "邀请尝试次数过多，请稍后再试。",
     "WORKSPACE_ROOT_RESTRICTED": "所选存储根目录超出了该账号允许的范围。",
     "WORKSPACE_ROOT_CONTAINER_UNSUPPORTED": "容器环境下不能设置「允许的存储根目录」。",
+    "PROJECT_WORKDIR_INVALID": "无法使用该项目工作目录：{{detail}}",
+    "PROJECT_NOT_FOUND": "该工作空间项目已不存在。",
     "TOKEN_QUOTA_EXCEEDED": "该账号已达到 token 配额上限，请联系管理员提升额度（{{used}}/{{quota}}）。",
     "AGENT_QUOTA_EXCEEDED": "该账号已达到专家数量上限，请联系管理员提升额度（{{used}}/{{quota}}）。",
     "CAPTCHA_REQUIRED": "此服务器登录需要验证码令牌。",
@@ -226,6 +228,7 @@
   },
   "nav": {
     "chat": "对话",
+    "workspace": "工作空间",
     "common": "常用",
     "control": "控制",
     "experts": "专家",
@@ -1907,6 +1910,92 @@
     }
   },
   "workspace": {
+    "title": "工作空间",
+    "subtitle": "每个项目绑定本机的一个工作目录，智能体在该目录内工作。",
+    "newProject": "新建项目",
+    "editProject": "编辑项目",
+    "create": "创建",
+    "projectName": "项目名称",
+    "projectNamePlaceholder": "例如：市场官网",
+    "projectNameRequired": "请输入项目名称",
+    "workingDir": "工作目录",
+    "workingDirRequired": "请选择工作目录",
+    "workingDirHint": "项目智能体会在这个目录中读写文件。可以选择已有目录，也可以在选择器中新建文件夹。",
+    "description": "项目描述",
+    "descriptionPlaceholder": "这个项目用来做什么？",
+    "created": "项目已创建",
+    "updated": "项目已更新",
+    "projectSaveFailed": "保存项目失败",
+    "deleteTitle": "删除「{{name}}」？",
+    "deleteBody": "项目及其对话会被删除，工作目录中的文件会保留。",
+    "deleted": "项目已删除",
+    "projectDeleteFailed": "删除项目失败",
+    "projectActions": "项目操作",
+    "emptyTitle": "还没有项目",
+    "emptyHint": "新建一个项目，选择工作目录，然后让智能体在这个目录里开始工作。",
+    "updatedAt": "更新于 {{time}}",
+    "notFound": "项目不存在",
+    "backToProjects": "返回工作空间",
+    "startFailed": "项目智能体启动失败",
+    "modeWork": "工作",
+    "modeCode": "编码",
+    "selectWorkspace": "选择工作空间",
+    "permissionAsk": "默认权限",
+    "permissionFullAccess": "完全访问",
+    "chips": {
+      "documents": {
+        "label": "文档",
+        "prompt": "帮我写一份文档，主题是："
+      },
+      "finance": {
+        "label": "财务",
+        "prompt": "帮我分析这份财务数据，重点看："
+      },
+      "data": {
+        "label": "数据",
+        "prompt": "帮我分析这份数据并回答："
+      },
+      "slides": {
+        "label": "演示文稿",
+        "prompt": "帮我做一份演示文稿，主题是："
+      },
+      "research": {
+        "label": "深度研究",
+        "prompt": "帮我深入研究这个主题，并给出带来源的总结："
+      },
+      "proposals": {
+        "label": "方案",
+        "prompt": "帮我写一份方案，背景是："
+      },
+      "scheduled": {
+        "label": "定时任务",
+        "prompt": "帮我创建一个定时任务，每天上午 9 点执行："
+      },
+      "explain": {
+        "label": "解释代码",
+        "prompt": "解释这个项目的代码结构，从入口开始讲清楚主要模块。"
+      },
+      "fix": {
+        "label": "修复问题",
+        "prompt": "检查这个项目里可能存在的问题，并修复："
+      },
+      "tests": {
+        "label": "编写测试",
+        "prompt": "为这个项目补充单元测试，先找出覆盖不足的模块。"
+      },
+      "refactor": {
+        "label": "重构",
+        "prompt": "重构这段代码，保持行为不变："
+      },
+      "review": {
+        "label": "审查变更",
+        "prompt": "审查最近的代码变更，指出风险和可改进之处："
+      },
+      "run": {
+        "label": "运行项目",
+        "prompt": "运行这个项目，并告诉我如何验证它工作正常。"
+      }
+    },
     "refreshHint": "只刷新根目录；子目录在展开时按需加载",
     "refreshFailed": "刷新失败",
     "uploaded": "已上传 {{name}}",

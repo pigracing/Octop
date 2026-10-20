@@ -19,6 +19,7 @@ import {
   GraduationCap,
   Shield,
   PanelsTopLeft,
+  FolderKanban,
 } from "lucide-react";
 import type { OctopUser } from "../api/modules/auth";
 import { navAllowed, userCan } from "../utils/permissions";
@@ -45,12 +46,20 @@ function personalizationNavPath(user: OctopUser | null): string {
   return PERSONALIZATION_NAV_TABS[0].path;
 }
 
+export interface NavChildItem {
+  key: string;
+  path: string;
+  label: string;
+}
+
 export interface NavItem {
   key: string;
   path: string;
   icon: ReactNode;
   labelKey: string;
   badge?: string;
+  /** Dynamic nested entries (workspace projects). */
+  children?: NavChildItem[];
 }
 
 export interface NavSection {
@@ -66,6 +75,7 @@ export interface NavSection {
 /** Every nav item key the sidebar can show. Keep in sync with `SIDEBAR_NAV_KEYS` in `octop.infra.users.preferences`. */
 export const SIDEBAR_NAV_KEYS = [
   "chat",
+  "workspace",
   "experts",
   "tasks",
   "token-usage",
@@ -157,6 +167,12 @@ export function buildNavSections(
       path: "/chat",
       icon: <MessageSquareText size={iconSize} strokeWidth={iconStroke} />,
       labelKey: "nav.chat",
+    },
+    {
+      key: "workspace",
+      path: "/workspace",
+      icon: <FolderKanban size={iconSize} strokeWidth={iconStroke} />,
+      labelKey: "nav.workspace",
     },
   ];
   if (navAllowed(user, "experts")) {
