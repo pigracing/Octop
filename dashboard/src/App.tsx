@@ -47,6 +47,9 @@ function ThemedApp() {
   const isMobile = useIsMobile();
   const desktopChrome = useDesktopChrome();
   const brandTokens = brandTokensFor(palette, isDark, customColor);
+  // The Starbucks palette themes the shell surfaces (cream / espresso green).
+  // Keep antd portals (modal, select, table…) on the same tint in dark mode.
+  const isStarbucks = palette === "starbucks";
   // Make antd built-ins (Popconfirm OK/Cancel, Modal default footer, Empty,
   // Pagination, DatePicker, Table… ) follow the current UI language.
   // DatePicker month/weekday labels come from dayjs — keep it in sync too.
@@ -78,24 +81,46 @@ function ThemedApp() {
         : {}),
       ...(isDark
         ? {
-            colorBgBase: "#0f1117",
-            colorTextBase: "#e7e7ed",
-            colorBgContainer: "#0f1117",
-            colorBgElevated: "#1a1c28",
-            colorBgLayout: "#0b0d14",
+            colorBgBase: isStarbucks ? "#121d19" : "#0f1117",
+            colorTextBase: isStarbucks ? "#f2efe6" : "#e7e7ed",
+            colorBgContainer: isStarbucks ? "#121d19" : "#0f1117",
+            colorBgElevated: isStarbucks ? "#1b2922" : "#1a1c28",
+            colorBgLayout: isStarbucks ? "#0c1512" : "#0b0d14",
             colorBgSpotlight: "rgba(0, 0, 0, 0.85)",
             colorBgMask: "rgba(5, 5, 8, 0.80)",
-            colorBorder: "rgba(255,255,255,0.08)",
-            colorBorderSecondary: "rgba(255,255,255,0.05)",
-            colorText: "rgba(255, 255, 255, 0.92)",
-            colorTextSecondary: "rgba(255, 255, 255, 0.64)",
-            colorTextTertiary: "rgba(255, 255, 255, 0.38)",
-            colorTextQuaternary: "rgba(255, 255, 255, 0.22)",
-            colorFill: "rgba(255, 255, 255, 0.06)",
-            colorFillSecondary: "rgba(255, 255, 255, 0.04)",
-            colorFillTertiary: "rgba(255, 255, 255, 0.03)",
-            colorFillQuaternary: "rgba(255, 255, 255, 0.02)",
-            colorBgTextHover: "rgba(255, 255, 255, 0.06)",
+            colorBorder: isStarbucks
+              ? "rgba(242,239,230,0.10)"
+              : "rgba(255,255,255,0.08)",
+            colorBorderSecondary: isStarbucks
+              ? "rgba(242,239,230,0.06)"
+              : "rgba(255,255,255,0.05)",
+            colorText: isStarbucks
+              ? "rgba(242, 239, 230, 0.92)"
+              : "rgba(255, 255, 255, 0.92)",
+            colorTextSecondary: isStarbucks
+              ? "rgba(242, 239, 230, 0.64)"
+              : "rgba(255, 255, 255, 0.64)",
+            colorTextTertiary: isStarbucks
+              ? "rgba(242, 239, 230, 0.38)"
+              : "rgba(255, 255, 255, 0.38)",
+            colorTextQuaternary: isStarbucks
+              ? "rgba(242, 239, 230, 0.22)"
+              : "rgba(255, 255, 255, 0.22)",
+            colorFill: isStarbucks
+              ? "rgba(242, 239, 230, 0.06)"
+              : "rgba(255, 255, 255, 0.06)",
+            colorFillSecondary: isStarbucks
+              ? "rgba(242, 239, 230, 0.04)"
+              : "rgba(255, 255, 255, 0.04)",
+            colorFillTertiary: isStarbucks
+              ? "rgba(242, 239, 230, 0.03)"
+              : "rgba(255, 255, 255, 0.03)",
+            colorFillQuaternary: isStarbucks
+              ? "rgba(242, 239, 230, 0.02)"
+              : "rgba(255, 255, 255, 0.02)",
+            colorBgTextHover: isStarbucks
+              ? "rgba(242, 239, 230, 0.06)"
+              : "rgba(255, 255, 255, 0.06)",
             ...brandTokens,
             boxShadow: "0px 4px 6px 0px rgba(0, 0, 0, 0.3)",
             boxShadowSecondary:
@@ -107,14 +132,22 @@ function ThemedApp() {
     },
     components: isDark
       ? {
-          Modal: { headerBg: "#1a1c28", contentBg: "#1a1c28" },
-          Input: { colorBgBase: "#0f1117" },
-          InputNumber: { colorBgBase: "#0f1117" },
-          Select: { colorBgBase: "#0f1117", selectorBg: "#0f1117" },
-          DatePicker: { colorBgBase: "#0f1117" },
-          Segmented: { itemSelectedBg: "#1a1c28" },
-          Card: { colorBgContainer: "#161822" },
-          Tooltip: { colorBgSpotlight: "#424242" },
+          Modal: {
+            headerBg: isStarbucks ? "#1b2922" : "#1a1c28",
+            contentBg: isStarbucks ? "#1b2922" : "#1a1c28",
+          },
+          Input: { colorBgBase: isStarbucks ? "#121d19" : "#0f1117" },
+          InputNumber: { colorBgBase: isStarbucks ? "#121d19" : "#0f1117" },
+          Select: {
+            colorBgBase: isStarbucks ? "#121d19" : "#0f1117",
+            selectorBg: isStarbucks ? "#121d19" : "#0f1117",
+          },
+          DatePicker: { colorBgBase: isStarbucks ? "#121d19" : "#0f1117" },
+          Segmented: { itemSelectedBg: isStarbucks ? "#1b2922" : "#1a1c28" },
+          Card: { colorBgContainer: isStarbucks ? "#18251f" : "#161822" },
+          Tooltip: {
+            colorBgSpotlight: isStarbucks ? "#273830" : "#424242",
+          },
         }
       : {},
   };

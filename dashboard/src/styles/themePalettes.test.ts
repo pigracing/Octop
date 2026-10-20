@@ -3,6 +3,7 @@ import {
   ANTD_BRAND_TOKENS,
   VALID_PALETTES,
   brandPrimary,
+  paletteThemeColor,
 } from "./themePalettes";
 
 function relativeLuminance(hex: string): number {
@@ -33,6 +34,7 @@ describe("theme palettes", () => {
       "emerald",
       "amber",
       "slate",
+      "starbucks",
     ]);
   });
 
@@ -68,4 +70,11 @@ describe("theme palettes", () => {
       );
     },
   );
+
+  it("matches the PWA chrome color to the starbucks shell", () => {
+    expect(paletteThemeColor("starbucks", false)).toBe("#fbf9f3");
+    expect(paletteThemeColor("starbucks", true)).toBe("#0c1512");
+    expect(paletteThemeColor("rose", false)).toBe("#ffffff");
+    expect(paletteThemeColor("rose", true)).toBe("#1a1c28");
+  });
 });

@@ -47,6 +47,7 @@
             return false;
           }
         }
+        var palette = "";
         try {
           var raw = localStorage.getItem(KEY);
           var pref = "system";
@@ -62,6 +63,9 @@
             ) {
               pref = parsed.preference;
             }
+            if (parsed && typeof parsed.palette === "string") {
+              palette = parsed.palette;
+            }
           }
           if (pref === "dark" || (pref === "system" && systemDark())) {
             mode = "dark";
@@ -70,7 +74,13 @@
           if (systemDark()) mode = "dark";
         }
         document.documentElement.setAttribute("data-theme", mode);
+        if (palette) {
+          document.documentElement.setAttribute("data-palette", palette);
+        }
         var themeColor = mode === "dark" ? "#1a1c28" : "#ffffff";
+        if (palette === "starbucks") {
+          themeColor = mode === "dark" ? "#0c1512" : "#fbf9f3";
+        }
         var metas = document.querySelectorAll('meta[name="theme-color"]');
         for (var i = 0; i < metas.length; i++) {
           metas[i].setAttribute("content", themeColor);
@@ -122,6 +132,24 @@
         background: #12141c;
         color: rgba(255, 255, 255, 0.55);
       }
+      /* Starbucks palette: match the cream / espresso-green shell before
+         the dashboard stylesheet loads. */
+      html[data-palette="starbucks"]:not([data-theme="dark"]),
+      html[data-palette="starbucks"]:not([data-theme="dark"]) body {
+        background: #fbf9f3;
+      }
+      html[data-palette="starbucks"]:not([data-theme="dark"]) #octop-boot {
+        background: #fbf9f3;
+        color: #6b7a72;
+      }
+      html[data-palette="starbucks"][data-theme="dark"],
+      html[data-palette="starbucks"][data-theme="dark"] body {
+        background: #0c1512;
+      }
+      html[data-palette="starbucks"][data-theme="dark"] #octop-boot {
+        background: #0c1512;
+        color: rgba(242, 239, 230, 0.6);
+      }
       #octop-boot-mark {
         position: relative;
         width: 88px;
@@ -140,6 +168,14 @@
       html[data-theme="dark"] #octop-boot-ring {
         border-color: rgba(240, 139, 154, 0.22);
         border-top-color: #f08b9a;
+      }
+      html[data-palette="starbucks"] #octop-boot-ring {
+        border-color: rgba(0, 98, 65, 0.18);
+        border-top-color: #006241;
+      }
+      html[data-palette="starbucks"][data-theme="dark"] #octop-boot-ring {
+        border-color: rgba(123, 197, 163, 0.22);
+        border-top-color: #7bc5a3;
       }
       .octop-boot-logo {
         position: absolute;

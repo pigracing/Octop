@@ -4019,6 +4019,7 @@
       "emerald": "Emerald",
       "amber": "Amber",
       "slate": "Slate",
+      "starbucks": "Starbucks",
       "custom": "Custom color"
     },
     "currentVersion": "Current version v{{version}}",

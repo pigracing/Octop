@@ -15,6 +15,7 @@ import {
   DEFAULT_PALETTE,
   customPaletteCssVars,
   normalizeHexColor,
+  paletteThemeColor,
   type ThemePalette,
 } from "../styles/themePalettes";
 
@@ -139,15 +140,16 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", mode);
 
-    // Keep the PWA theme-color meta tag in sync with the resolved mode so
-    // the browser chrome (address bar, status bar, PWA title bar) matches.
-    const themeColor = mode === "dark" ? "#1a1c28" : "#ffffff";
+    // Keep the PWA theme-color meta tag in sync with the resolved mode and
+    // palette so the browser chrome (address bar, status bar, PWA title bar)
+    // matches the active theme.
+    const themeColor = paletteThemeColor(palette, mode === "dark");
     document
       .querySelectorAll<HTMLMetaElement>("meta[name='theme-color']")
       .forEach((el) => {
         el.content = themeColor;
       });
-  }, [mode]);
+  }, [mode, palette]);
 
   const setPreference = useCallback((p: ThemePreference) => {
     setPreferenceState(p);

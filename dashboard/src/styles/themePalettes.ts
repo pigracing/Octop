@@ -9,6 +9,7 @@ export type ThemePalette =
   | "emerald"
   | "amber"
   | "slate"
+  | "starbucks"
   | "custom";
 
 export const VALID_PALETTES: ThemePalette[] = [
@@ -20,6 +21,7 @@ export const VALID_PALETTES: ThemePalette[] = [
   "emerald",
   "amber",
   "slate",
+  "starbucks",
 ];
 
 /** Curated palettes only — "custom" is handled separately via a hex value. */
@@ -52,8 +54,24 @@ export const PALETTE_SWATCH: Record<ThemePalette, string> = {
   emerald: "#10B981",
   amber: "#F59E0B",
   slate: "#64748B",
+  starbucks: "#006241",
   custom: DEFAULT_CUSTOM_COLOR, // live swatch is provided by the picker UI
 };
+
+/**
+ * Browser/PWA chrome color for the active palette × mode. Most palettes keep
+ * the neutral shell; themed palettes match their own background so the
+ * address bar/status bar does not flash a different color.
+ */
+export function paletteThemeColor(
+  palette: ThemePalette,
+  isDark: boolean,
+): string {
+  if (palette === "starbucks") {
+    return isDark ? "#0c1512" : "#fbf9f3";
+  }
+  return isDark ? "#1a1c28" : "#ffffff";
+}
 
 type AntdBrandTokens = {
   colorPrimary: string;
@@ -240,6 +258,27 @@ export const ANTD_BRAND_TOKENS: Record<
       colorPrimaryTextHover: "#CBD5E1",
       colorPrimaryTextActive: "#64748B",
       colorLink: "#94A3B8",
+    },
+  },
+  starbucks: {
+    light: {
+      colorPrimary: "#006241",
+      colorPrimaryHover: "#00754A",
+      colorPrimaryActive: "#004B33",
+      colorLink: "#006241",
+    },
+    dark: {
+      colorPrimary: "#00754A",
+      colorPrimaryBg: "rgba(0, 117, 74, 0.16)",
+      colorPrimaryBgHover: "rgba(0, 117, 74, 0.22)",
+      colorPrimaryBorder: "rgba(123, 197, 163, 0.32)",
+      colorPrimaryBorderHover: "rgba(123, 197, 163, 0.42)",
+      colorPrimaryHover: "#006241",
+      colorPrimaryActive: "#004B33",
+      colorPrimaryText: "#7BC5A3",
+      colorPrimaryTextHover: "#9AD8BA",
+      colorPrimaryTextActive: "#7BC5A3",
+      colorLink: "#7BC5A3",
     },
   },
 };

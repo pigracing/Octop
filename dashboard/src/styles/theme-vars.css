@@ -870,6 +870,193 @@ html[data-palette="slate"][data-theme="dark"] {
   --fn-sidebar-item-active-text: #94a3b8;
 }
 
+/* ---------- STARBUCKS (deep green + cream + gold) ---------- */
+/* Unlike the tint-only palettes above, this one is a full surface theme:
+   cream shell with white cards in light mode, espresso-green in dark mode. */
+html[data-palette="starbucks"]:not([data-theme="dark"]) {
+  /* ---- Backgrounds ---- */
+  --fn-bg-primary: #fbf9f3;
+  --fn-bg-secondary: #f4f1e7;
+  --fn-bg-tertiary: #ece7d8;
+  --fn-bg-elevated: #ffffff;
+  --fn-bg-layout: #f2efe4;
+  --fn-bg-container: #ffffff;
+  --fn-bg-hover: rgba(0, 98, 65, 0.05);
+  --fn-bg-active: rgba(0, 98, 65, 0.09);
+  --fn-bg-selected: rgba(0, 98, 65, 0.07);
+  --fn-bg-code: #f4f1e7;
+  --fn-bg-toolbar: #faf8f1;
+  --fn-bg-toolbar-hover: #f0ecdf;
+  --fn-bg-input-label: #f4f1e7;
+  --fn-bg-glass: rgba(251, 249, 243, 0.8);
+  --fn-bg-sidebar: #fbf9f3;
+  --fn-bg-base: #ffffff;
+  --fn-bg-page: #f2efe4;
+  --fn-bg-quaternary: rgba(30, 57, 50, 0.04);
+  --fn-bg-subtle: #f0ecdf;
+  --fn-bg-secondary-hover: #f0ecdf;
+  --fn-bg-secondary-active: #e6e0cf;
+  --fn-surface: #ffffff;
+  --fn-surface-sunken: #f4f1e7;
+  --fn-fill-hover: rgba(30, 57, 50, 0.05);
+  --fn-fill-tertiary: #f0ecdf;
+
+  /* ---- Text ---- */
+  --fn-text-primary: #1e3932;
+  --fn-text-secondary: #4d5d55;
+  --fn-text-tertiary: #8a948c;
+  --fn-text-quaternary: #b9bfb6;
+  --fn-text-placeholder: #a8b0a7;
+  --fn-text-disabled: #b9bfb6;
+  --fn-text-inverse: #ffffff;
+  --fn-text-brand: #006241;
+  --fn-text-link: var(--fn-text-brand);
+  --fn-logo-color: #006241;
+  --fn-logo-filter: none;
+
+  /* ---- Borders ---- */
+  --fn-border-primary: #e4dfd1;
+  --fn-border-secondary: #eeeae0;
+  --fn-border-tertiary: #f6f3ec;
+  --fn-border-input: #d5cfbe;
+  --fn-border-input-alt: #e4dfd1;
+  --fn-border-focus: #006241;
+  --fn-border: #e4dfd1;
+  --fn-border-color: #e4dfd1;
+  --fn-border-strong: #cfc8b6;
+  --fn-border-subtle: rgba(30, 57, 50, 0.08);
+
+  /* ---- Brand (Starbucks green) ---- */
+  --fn-color-brand: #006241;
+  --fn-color-brand-hover: #00754a;
+  --fn-color-brand-soft: #004b33;
+  --fn-color-brand-bg: rgba(0, 98, 65, 0.07);
+  --fn-color-brand-light: #e8f0ea;
+  --fn-color-brand-shadow: rgba(0, 98, 65, 0.18);
+  --fn-color-brand-glow: rgba(0, 98, 65, 0.1);
+  --fn-assistant-bubble-bg-gradient: linear-gradient(
+    135deg,
+    rgba(232, 240, 234, 0.8) 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    rgba(247, 245, 239, 0.75) 100%
+  );
+  --fn-assistant-bubble-border: rgba(0, 98, 65, 0.14);
+  --fn-assistant-glow-color: 0, 98, 65;
+  --fn-tag-channel-text: #8c6524;
+  --fn-shadow-brand: 0 4px 14px rgba(0, 98, 65, 0.18);
+  --fn-shadow-brand-lg: 0 8px 24px rgba(0, 98, 65, 0.24);
+
+  /* ---- Selected rows ---- */
+  --fn-row-selected-bg: rgba(0, 98, 65, 0.06);
+  --fn-row-selected-hover: rgba(0, 98, 65, 0.1);
+  --fn-row-selected-alt-bg: rgba(0, 98, 65, 0.04);
+  --fn-row-selected-alt-hover: rgba(0, 98, 65, 0.08);
+  --fn-row-selected-border: #006241;
+
+  /* ---- Cards / sidebar / header ---- */
+  --fn-card-border-normal: #e4dfd1;
+  --fn-sidebar-bg: #fbf9f3;
+  --fn-sidebar-border: #e4dfd1;
+  --fn-sidebar-item-hover: #f0ecdf;
+  --fn-sidebar-item-active-bg: #e8f0ea;
+  --fn-sidebar-item-active: rgba(0, 98, 65, 0.1);
+  --fn-sidebar-item-active-text: #006241;
+  --fn-sidebar-group-text: #a39d8f;
+  --fn-header-bg: #fbf9f3;
+}
+
+html[data-palette="starbucks"][data-theme="dark"] {
+  /* ---- Backgrounds ---- */
+  --fn-bg-primary: #121d19;
+  --fn-bg-secondary: #18251f;
+  --fn-bg-tertiary: #1f2e27;
+  --fn-bg-elevated: #1b2922;
+  --fn-bg-layout: #0c1512;
+  --fn-bg-container: #121d19;
+  --fn-bg-hover: rgba(123, 197, 163, 0.1);
+  --fn-bg-active: rgba(123, 197, 163, 0.16);
+  --fn-bg-selected: rgba(123, 197, 163, 0.12);
+  --fn-bg-code: #18251f;
+  --fn-bg-toolbar: #14201b;
+  --fn-bg-toolbar-hover: #1f2e27;
+  --fn-bg-input-label: #18251f;
+  --fn-bg-glass: rgba(12, 21, 18, 0.8);
+  --fn-bg-sidebar: #0f1a16;
+  --fn-bg-base: #121d19;
+  --fn-bg-page: #0c1512;
+  --fn-bg-quaternary: rgba(242, 239, 230, 0.04);
+  --fn-bg-subtle: #1f2e27;
+  --fn-bg-secondary-hover: #1f2e27;
+  --fn-bg-secondary-active: #273830;
+  --fn-surface: #1b2922;
+  --fn-surface-sunken: #18251f;
+  --fn-fill-hover: rgba(242, 239, 230, 0.08);
+  --fn-fill-tertiary: rgba(242, 239, 230, 0.06);
+
+  /* ---- Text ---- */
+  --fn-text-primary: #f2efe6;
+  --fn-text-secondary: rgba(242, 239, 230, 0.68);
+  --fn-text-tertiary: rgba(242, 239, 230, 0.42);
+  --fn-text-quaternary: rgba(242, 239, 230, 0.24);
+  --fn-text-placeholder: rgba(242, 239, 230, 0.2);
+  --fn-text-disabled: rgba(242, 239, 230, 0.2);
+  --fn-text-inverse: #0c1512;
+  --fn-text-brand: #7bc5a3;
+  --fn-text-link: var(--fn-text-brand);
+  --fn-logo-color: #7bc5a3;
+  --fn-logo-filter: none;
+
+  /* ---- Borders ---- */
+  --fn-border-primary: rgba(242, 239, 230, 0.1);
+  --fn-border-secondary: rgba(242, 239, 230, 0.06);
+  --fn-border-tertiary: rgba(242, 239, 230, 0.04);
+  --fn-border-input: rgba(242, 239, 230, 0.14);
+  --fn-border-input-alt: rgba(242, 239, 230, 0.1);
+  --fn-border-focus: #7bc5a3;
+  --fn-border: rgba(242, 239, 230, 0.1);
+  --fn-border-color: rgba(242, 239, 230, 0.1);
+  --fn-border-strong: rgba(242, 239, 230, 0.18);
+  --fn-border-subtle: rgba(242, 239, 230, 0.06);
+
+  /* ---- Brand (green, brightened for dark surfaces) ---- */
+  --fn-color-brand: #00754a;
+  --fn-color-brand-hover: #006241;
+  --fn-color-brand-soft: #006241;
+  --fn-color-brand-bg: rgba(76, 175, 138, 0.14);
+  --fn-color-brand-light: rgba(76, 175, 138, 0.18);
+  --fn-color-brand-shadow: rgba(0, 117, 74, 0.35);
+  --fn-color-brand-glow: rgba(123, 197, 163, 0.12);
+  --fn-assistant-bubble-bg-gradient: linear-gradient(
+    135deg,
+    rgba(123, 197, 163, 0.12) 0%,
+    rgba(242, 239, 230, 0.04) 50%,
+    rgba(123, 197, 163, 0.08) 100%
+  );
+  --fn-assistant-bubble-border: rgba(123, 197, 163, 0.18);
+  --fn-assistant-glow-color: 123, 197, 163;
+  --fn-tag-channel-text: #d4b06a;
+  --fn-shadow-brand: 0 4px 14px rgba(0, 117, 74, 0.3);
+  --fn-shadow-brand-lg: 0 8px 24px rgba(0, 117, 74, 0.38);
+
+  /* ---- Selected rows ---- */
+  --fn-row-selected-bg: rgba(123, 197, 163, 0.12);
+  --fn-row-selected-hover: rgba(123, 197, 163, 0.18);
+  --fn-row-selected-alt-bg: rgba(123, 197, 163, 0.1);
+  --fn-row-selected-alt-hover: rgba(123, 197, 163, 0.15);
+  --fn-row-selected-border: #7bc5a3;
+
+  /* ---- Cards / sidebar / header ---- */
+  --fn-card-border-normal: rgba(242, 239, 230, 0.08);
+  --fn-sidebar-bg: #0f1a16;
+  --fn-sidebar-border: rgba(242, 239, 230, 0.08);
+  --fn-sidebar-item-hover: rgba(242, 239, 230, 0.05);
+  --fn-sidebar-item-active-bg: rgba(76, 175, 138, 0.16);
+  --fn-sidebar-item-active: rgba(76, 175, 138, 0.16);
+  --fn-sidebar-item-active-text: #7bc5a3;
+  --fn-sidebar-group-text: rgba(242, 239, 230, 0.3);
+  --fn-header-bg: #0c1512;
+}
+
 /* ---------- GLOBAL RESET & TRANSITIONS ---------- */
 html,
 body,
