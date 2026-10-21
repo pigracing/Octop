@@ -10,10 +10,26 @@ filename table. Do not scrape the assets list.
 from __future__ import annotations
 
 import argparse
+import json
 import sys
+from pathlib import Path
 
 GITHUB_REPO = "TencentCloud/Octop"
 DOWNLOAD_BASE = f"https://github.com/{GITHUB_REPO}/releases/download"
+BRANDING_CONFIG = Path(__file__).resolve().parents[1] / "desktop" / "branding.json"
+DEFAULT_APP_NAME = "Octop"
+
+
+def configured_app_name(path: Path = BRANDING_CONFIG) -> str:
+    """Return desktop/branding.json display_name, falling back to Octop."""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return DEFAULT_APP_NAME
+    name = data.get("display_name")
+    if not isinstance(name, str) or not name.strip():
+        return DEFAULT_APP_NAME
+    return name.strip()
 
 
 def split_tag(raw: str) -> tuple[str, str]:
@@ -33,28 +49,35 @@ def md_link(label: str, tag: str, filename: str) -> str:
     return f"[{label}]({asset_url(tag, filename)})"
 
 
-def desktop_name(os_name: str, arch: str, version: str, ext: str) -> str:
-    return f"Octop-desktop-{os_name}-{arch}-{version}.{ext}"
+def desktop_name(
+    os_name: str, arch: str, version: str, ext: str, app_name: str | None = None
+) -> str:
+    prefix = app_name or configured_app_name()
+    return f"{prefix}-desktop-{os_name}-{arch}-{version}.{ext}"
 
 
-def portable_name(os_name: str, arch: str, version: str) -> str:
-    return f"Octop-portable-{os_name}-{arch}-{version}.zip"
+def portable_name(os_name: str, arch: str, version: str, app_name: str | None = None) -> str:
+    prefix = app_name or configured_app_name()
+    return f"{prefix}-portable-{os_name}-{arch}-{version}.zip"
 
 
-def render_download_section(raw_version: str) -> str:
+def render_download_section(raw_version: str, app_name: str | None = None) -> str:
     tag, version = split_tag(raw_version)
-    win64 = md_link("64-bit (Recommended)", tag, desktop_name("windows", "amd64", version, "exe"))
-    win_arm = md_link("ARM64", tag, desktop_name("windows", "arm64", version, "exe"))
-    win64_zip = md_link("64-bit", tag, portable_name("windows", "amd64", version))
-    win_arm_zip = md_link("ARM64", tag, portable_name("windows", "arm64", version))
-    mac_arm = md_link("Apple Silicon", tag, desktop_name("darwin", "arm64", version, "dmg"))
-    mac_intel = md_link("Intel", tag, desktop_name("darwin", "amd64", version, "dmg"))
-    mac_arm_zip = md_link("Apple Silicon", tag, portable_name("darwin", "arm64", version))
-    mac_intel_zip = md_link("Intel", tag, portable_name("darwin", "amd64", version))
-    linux64 = md_link("64-bit", tag, desktop_name("linux", "amd64", version, "tar.gz"))
-    linux_arm = md_link("ARM64", tag, desktop_name("linux", "arm64", version, "tar.gz"))
-    linux64_zip = md_link("64-bit", tag, portable_name("linux", "amd64", version))
-    linux_arm_zip = md_link("ARM64", tag, portable_name("linux", "arm64", version))
+    prefix = app_name or configured_app_name()
+    win64 = md_link(
+        "64-bit (Recommended)", tag, desktop_name("windows", "amd64", version, "exe", prefix)
+    )
+    win_arm = md_link("ARM64", tag, desktop_name("windows", "arm64", version, "exe", prefix))
+    win64_zip = md_link("64-bit", tag, portable_name("windows", "amd64", version, prefix))
+    win_arm_zip = md_link("ARM64", tag, portable_name("windows", "arm64", version, prefix))
+    mac_arm = md_link("Apple Silicon", tag, desktop_name("darwin", "arm64", version, "dmg", prefix))
+    mac_intel = md_link("Intel", tag, desktop_name("darwin", "amd64", version, "dmg", prefix))
+    mac_arm_zip = md_link("Apple Silicon", tag, portable_name("darwin", "arm64", version, prefix))
+    mac_intel_zip = md_link("Intel", tag, portable_name("darwin", "amd64", version, prefix))
+    linux64 = md_link("64-bit", tag, desktop_name("linux", "amd64", version, "tar.gz", prefix))
+    linux_arm = md_link("ARM64", tag, desktop_name("linux", "arm64", version, "tar.gz", prefix))
+    linux64_zip = md_link("64-bit", tag, portable_name("linux", "amd64", version, prefix))
+    linux_arm_zip = md_link("ARM64", tag, portable_name("linux", "arm64", version, prefix))
     fnos_docker = md_link(
         "Docker (recommended; x86 and ARM)", tag, f"Octop-fnos-docker-{version}.fpk"
     )

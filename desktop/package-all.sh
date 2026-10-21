@@ -207,7 +207,7 @@ if [[ ${#remaining[@]} -gt 0 && "$skip_ci" == 0 ]]; then
           if gh run download "$run_id" -D "$tmp"; then
             while IFS= read -r -d '' artifact; do
               cp -f "$artifact" "$release_dir/"
-            done < <(find "$tmp" -type f -name 'Octop-*' -print0)
+            done < <(find "$tmp" -type f -name "${display_name}-*" -print0)
             completed+=("${remaining[@]}")
           else
             failed+=("${remaining[@]}")

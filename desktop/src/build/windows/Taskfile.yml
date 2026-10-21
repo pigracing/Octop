@@ -38,7 +38,8 @@ tasks:
           New-Item -ItemType Directory -Force bundled | Out-Null;
           Copy-Item -Force '{{.PORTABLE_ZIP}}' 'bundled/portable.zip'"
     vars:
-      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/Octop-portable-windows-%s-%s.zip" (.ARCH | default ARCH) (.VERSION | default "dev"))}}'
+      DISPLAY_NAME: '{{.APP_DISPLAY_NAME | default "Octop"}}'
+      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/%s-portable-windows-%s-%s.zip" .DISPLAY_NAME (.ARCH | default ARCH) (.VERSION | default "dev"))}}'
 
   package:
     summary: Packages an NSIS installer with the portable runtime embedded
@@ -65,8 +66,9 @@ tasks:
     vars:
       ARCH: "{{.ARCH | default ARCH}}"
       VERSION: '{{.VERSION | default "dev"}}'
-      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/Octop-portable-windows-%s-%s.zip" .ARCH .VERSION)}}'
-      ARCHIVE: '{{.BIN_DIR}}/{{.APP_NAME}}-desktop-windows-{{.ARCH}}-{{.VERSION}}.exe'
+      DISPLAY_NAME: '{{.APP_DISPLAY_NAME | default "Octop"}}'
+      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/%s-portable-windows-%s-%s.zip" .DISPLAY_NAME .ARCH .VERSION)}}'
+      ARCHIVE: '{{.BIN_DIR}}/{{.DISPLAY_NAME}}-desktop-windows-{{.ARCH}}-{{.VERSION}}.exe'
 
   create:nsis:installer:
     summary: Wraps Octop.exe in an NSIS installer (Program Files + shortcuts)
@@ -105,7 +107,7 @@ tasks:
       DISPLAY_NAME: '{{.APP_DISPLAY_NAME | default "Octop"}}'
       # Display / outfile / registry keep pep440; INFO_FILEVERSION is numeric X.X.X.X.
       ARG_FLAG: '{{if eq (.ARCH | default ARCH) "amd64"}}AMD64{{else}}ARM64{{end}}'
-      ARCHIVE: '{{.BIN_DIR}}/{{.APP_NAME}}-desktop-windows-{{.ARCH}}-{{.VERSION}}.exe'
+      ARCHIVE: '{{.BIN_DIR}}/{{.DISPLAY_NAME}}-desktop-windows-{{.ARCH}}-{{.VERSION}}.exe'
 
   run:
     cmds:

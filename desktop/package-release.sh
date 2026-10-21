@@ -22,7 +22,8 @@ Platforms:
   windows-arm64 windows-amd64
 
 The platform defaults to the current native host. --reuse-portable skips
-rebuilding desktop/portable/release/Octop-portable-<platform>-<version>.zip when it already exists.
+rebuilding desktop/portable/release/<display-name>-portable-<platform>-<version>.zip
+when it already exists. <display-name> comes from desktop/branding.json.
 --skip-frontend reuses an already-built dashboard (desktop/package-all.sh builds it once).
 EOF
 }

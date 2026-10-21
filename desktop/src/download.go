@@ -246,6 +246,10 @@ func bundledPortableZip() (string, error) {
 	dir := filepath.Dir(exe)
 	plat := greenPlat()
 	legacy := fmt.Sprintf("Octop-%s.zip", plat)
+	prefixes := []string{"Octop-portable-"}
+	if productDisplayName != "" && productDisplayName != "Octop" {
+		prefixes = append(prefixes, productDisplayName+"-portable-")
+	}
 	searchDirs := []string{
 		dir,
 		filepath.Join(dir, "..", "Resources"),
@@ -256,7 +260,11 @@ func bundledPortableZip() (string, error) {
 		if _, err := os.Stat(legacyPath); err == nil {
 			return legacyPath, nil
 		}
-		matches, _ := filepath.Glob(filepath.Join(search, "Octop-portable-"+plat+"-*.zip"))
+		var matches []string
+		for _, prefix := range prefixes {
+			found, _ := filepath.Glob(filepath.Join(search, prefix+plat+"-*.zip"))
+			matches = append(matches, found...)
+		}
 		if len(matches) > 0 {
 			sort.Strings(matches)
 			return matches[len(matches)-1], nil

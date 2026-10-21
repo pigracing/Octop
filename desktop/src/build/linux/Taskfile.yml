@@ -29,22 +29,24 @@ tasks:
       - task: build
         vars:
           PRODUCTION: "true"
-      - rm -f {{.ARCHIVE}} bundled/portable.zip
-      - tar -C {{.BIN_DIR}} -czf {{.ARCHIVE}} {{.APP_NAME}}
+      - rm -f "{{.ARCHIVE}}" bundled/portable.zip
+      - tar -C "{{.BIN_DIR}}" -czf "{{.ARCHIVE}}" "{{.APP_NAME}}"
     vars:
       ARCH: "{{.ARCH | default ARCH}}"
       VERSION: '{{.VERSION | default "dev"}}'
-      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/Octop-portable-linux-%s-%s.zip" .ARCH .VERSION)}}'
-      ARCHIVE: '{{.BIN_DIR}}/{{.APP_NAME}}-desktop-linux-{{.ARCH}}-{{.VERSION}}.tar.gz'
+      DISPLAY_NAME: '{{.APP_DISPLAY_NAME | default "Octop"}}'
+      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/%s-portable-linux-%s-%s.zip" .DISPLAY_NAME .ARCH .VERSION)}}'
+      ARCHIVE: '{{.BIN_DIR}}/{{.DISPLAY_NAME}}-desktop-linux-{{.ARCH}}-{{.VERSION}}.tar.gz'
 
   stage:portable:
     summary: Copies the matching green zip for go:embed
     cmds:
-      - test -f {{.PORTABLE_ZIP}}
+      - test -f "{{.PORTABLE_ZIP}}"
       - mkdir -p bundled
-      - cp {{.PORTABLE_ZIP}} bundled/portable.zip
+      - cp "{{.PORTABLE_ZIP}}" bundled/portable.zip
     vars:
-      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/Octop-portable-linux-%s-%s.zip" (.ARCH | default ARCH) (.VERSION | default "dev"))}}'
+      DISPLAY_NAME: '{{.APP_DISPLAY_NAME | default "Octop"}}'
+      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/%s-portable-linux-%s-%s.zip" .DISPLAY_NAME (.ARCH | default ARCH) (.VERSION | default "dev"))}}'
 
   run:
     cmds:

@@ -17,7 +17,8 @@
 #     start.sh / start.bat
 #     README.txt
 #
-# Public filename is Octop-portable-<plat>-<version>.zip (see portable_zip_basename).
+# Public filename is <display_name>-portable-<plat>-<version>.zip, where
+# display_name comes from desktop/branding.json (see portable_zip_basename).
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"

@@ -38,7 +38,7 @@ tasks:
           ARCH: "{{.ARCH}}"
           VERSION: "{{.VERSION}}"
           APP_DISPLAY_NAME: "{{.DISPLAY_NAME}}"
-      - rm -f {{.ARCHIVE}} {{.BIN_DIR}}/{{.APP_NAME}}-Desktop-darwin-{{.ARCH}}.zip {{.BIN_DIR}}/{{.APP_NAME}}-Desktop-darwin-{{.ARCH}}.dmg
+      - rm -f "{{.ARCHIVE}}" {{.BIN_DIR}}/{{.APP_NAME}}-Desktop-darwin-{{.ARCH}}.zip {{.BIN_DIR}}/{{.APP_NAME}}-Desktop-darwin-{{.ARCH}}.dmg
       - |
         set -euo pipefail
         app_path="{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app"
@@ -149,17 +149,17 @@ tasks:
       ARCH: "{{.ARCH | default ARCH}}"
       VERSION: '{{.VERSION | default "dev"}}'
       DISPLAY_NAME: '{{.APP_DISPLAY_NAME | default "Octop"}}'
-      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/Octop-portable-darwin-%s-%s.zip" .ARCH .VERSION)}}'
-      ARCHIVE: '{{.BIN_DIR}}/{{.APP_NAME}}-desktop-darwin-{{.ARCH}}-{{.VERSION}}.dmg'
+      PORTABLE_ZIP: '{{.PORTABLE_ZIP | default (printf "../portable/release/%s-portable-darwin-%s-%s.zip" .DISPLAY_NAME .ARCH .VERSION)}}'
+      ARCHIVE: '{{.BIN_DIR}}/{{.DISPLAY_NAME}}-desktop-darwin-{{.ARCH}}-{{.VERSION}}.dmg'
 
   create:app:bundle:
     summary: Creates an .app bundle
     cmds:
-      - test -f {{.PORTABLE_ZIP}}
+      - test -f "{{.PORTABLE_ZIP}}"
       - mkdir -p "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/MacOS" "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Resources"
       - cp build/darwin/icons.icns "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Resources"
       # Stable name inside the signed .app; GitHub Release uses the versioned portable zip.
-      - cp {{.PORTABLE_ZIP}} "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Resources/Octop-darwin-{{.ARCH}}.zip"
+      - cp "{{.PORTABLE_ZIP}}" "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Resources/Octop-darwin-{{.ARCH}}.zip"
       - cp "{{.BIN_DIR}}/{{.APP_NAME}}" "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/MacOS"
       - cp build/branding/Info.plist "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents"
       - python3 build/stamp_version.py plist "{{.BIN_DIR}}/{{.DISPLAY_NAME}}.app/Contents/Info.plist" "{{.VERSION}}"

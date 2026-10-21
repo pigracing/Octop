@@ -25,26 +25,56 @@ ALL_PLATS=(
   windows-arm64
 )
 
-# Public GitHub Release names: Octop-<kind>-<os>-<arch>-<version>.<ext>
-# Zip payload directory stays Octop-<plat>/ (the desktop unzip strips the first
-# path component). PyPI wheels keep the PEP 427 name and are not renamed here.
+# Public GitHub Release names: <display_name>-<kind>-<os>-<arch>-<version>.<ext>
+# display_name comes from desktop/branding.json (defaults to Octop). Zip payload
+# directory stays Octop-<plat>/ (the desktop unzip strips the first path
+# component). PyPI wheels keep the PEP 427 name and are not renamed here.
 octop_version() {
   sed -nE 's/^version[[:space:]]*=[[:space:]]*"([^"]+)".*/\1/p' \
     "${REPO_ROOT}/pyproject.toml" | head -1
 }
 
+_brand_display_name=""
+
+brand_display_name() {
+  if [[ -z "${_brand_display_name}" ]]; then
+    local config="${REPO_ROOT}/desktop/branding.json"
+    local py name=""
+    for py in python3 python; do
+      command -v "$py" >/dev/null 2>&1 || continue
+      name="$("$py" - "$config" <<'PY' 2>/dev/null || true
+import json
+import sys
+
+try:
+    with open(sys.argv[1], encoding="utf-8") as fh:
+        data = json.load(fh)
+    name = data.get("display_name", "Octop")
+except (OSError, ValueError):
+    name = "Octop"
+print(name.strip() if isinstance(name, str) and name.strip() else "Octop")
+PY
+)"
+      [[ -n "$name" ]] && break
+    done
+    _brand_display_name="${name:-Octop}"
+  fi
+  printf '%s\n' "${_brand_display_name}"
+}
+
 portable_zip_basename() {
-  echo "Octop-portable-${1}-$(octop_version).zip"
+  echo "$(brand_display_name)-portable-${1}-$(octop_version).zip"
 }
 
 desktop_pkg_basename() {
   local plat="$1"
-  local ver
+  local ver prefix
   ver="$(octop_version)"
+  prefix="$(brand_display_name)"
   case "$plat" in
-    darwin-*) echo "Octop-desktop-${plat}-${ver}.dmg" ;;
-    windows-*) echo "Octop-desktop-${plat}-${ver}.exe" ;;
-    linux-*) echo "Octop-desktop-${plat}-${ver}.tar.gz" ;;
+    darwin-*) echo "${prefix}-desktop-${plat}-${ver}.dmg" ;;
+    windows-*) echo "${prefix}-desktop-${plat}-${ver}.exe" ;;
+    linux-*) echo "${prefix}-desktop-${plat}-${ver}.tar.gz" ;;
     *)
       echo "unknown platform: ${plat}" >&2
       return 1
